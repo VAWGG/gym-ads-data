@@ -23,12 +23,12 @@
 
 ## 1. EXECUTIVE SUMMARY
 
-**Bức tranh lớn:** Gym đang chi trung bình **28M VND/tháng** cho Meta Ads, thu về ~140 leads/tháng, chốt ~19 khách/tháng. Tỷ lệ chốt dao động **9.8–11.8%**. T3/2026 scale chi tiêu lên **43.8M** (gấp đôi T2) — một quyết định cần được đánh giá lại nghiêm túc.
+**Bức tranh lớn:** Gym đã chi tổng **83.8M VND trong 3 tháng** (T1-T3/2026) cho Meta Ads (trung bình ~28M/tháng), thu về ~140 leads/tháng, chốt ~19 khách/tháng. Tỷ lệ chốt dao động **9.8–11.8%**. T3/2026 scale chi tiêu lên **43.8M** (gấp đôi T2) — một quyết định cần được đánh giá lại nghiêm túc.
 
 **Kết luận trọng yếu:**
-- Hệ thống ads đang tạo ra **quá nhiều lead rác** — 38-45% "Không phù hợp" ngay từ đầu
-- **Cost per Done (cost per actual customer)** dao động **1.0–1.3M VND** — con số này chấp nhận được KHÔNG nếu LTV thấp
-- Engagement campaigns (ttlinh, ttmanh) chiếm **25-40% budget** nhưng gần như **KHÔNG tạo lead**
+- Hệ thống ads đang tạo ra **quá nhiều lead rác** — 50-73% "Không phù hợp" ngay từ đầu
+- **Cost per Done (cost per actual customer)** dao động **830K–1.02M VND** — con số này chấp nhận được KHÔNG nếu LTV thấp
+- Engagement campaigns (ttlinh, ttmanh, ttVANG, ttanhboi, ttboianh) chiếm **~13-15% budget (~10.5M/3 tháng)** nhưng gần như **KHÔNG tạo lead**
 - Google Ads (GG) source consistently underperforms MKT (Meta) về close rate
 - T3 scaling chưa có CRM data → **đang bay mù**
 
@@ -71,8 +71,10 @@
 | ttlinh | ~3.65M | 253K | ~14 VND | ~3 messaging contacts |
 | ttmanh | ~3.78M | 162K | ~23 VND | ~11 messaging contacts |
 | ttanhboi | ~1.52M | 68K | ~22 VND | ~3 messaging contacts |
+| ttVANG | ~0.39M | ~135 | ~1.7K VND | 0 |
+| ttboianh | ~1.18M | ~791 | ~1.5K VND | ~3 messaging contacts |
 
-> **🔍 Socratic #3:** 3 tháng chi **~9M VND cho engagement** → 14 messaging contacts. Mỗi messaging contact từ engagement campaigns giá **~643K VND**. Nếu bạn bỏ 9M đó vào lead gen, với CPL 160-180K, bạn có thêm **50-56 leads**. Tại sao bạn chọn likes thay vì leads?
+> **🔍 Socratic #3:** 3 tháng chi **~10.5M VND cho engagement** → ~17 messaging contacts. Mỗi messaging contact từ engagement campaigns giá **~618K VND**. Nếu bạn bỏ 10.5M đó vào lead gen, với CPL 160-180K, bạn có thêm **58-66 leads**. Tại sao bạn chọn likes thay vì leads?
 >
 > Devil's advocate: Engagement campaigns xây brand, warm audience cho retargeting. **Nhưng có đang retarget audience này không? Có custom audience nào được build từ engagers không?** Nếu không, thì engagement campaign là dead-end spend.
 
@@ -264,17 +266,17 @@ T3 chi **43.8M** (gấp đôi T2). Nếu close rate giữ 11%:
 
 > **🔍 Socratic #17:** Bạn scale spend gấp đôi mà chưa có CRM data tháng trước để validate. **Ai quyết định scale? Dựa trên metric nào?** Nếu dựa trên "Meta leads tăng" mà không check CRM Done, thì bạn đang optimize cho vanity metric.
 
-### 7.3 Engagement Spend — 9M+ VND tổng 3 tháng, giá trị gì?
+### 7.3 Engagement Spend — 10.5M VND tổng 3 tháng, giá trị gì?
 
 | Metric | Value |
 |--------|-------|
-| Total engagement spend (T1-T3) | ~9M VND |
-| Total engagements | ~526K |
+| Total engagement spend (T1-T3) | ~10.5M VND |
+| Total engagements | ~527K |
 | Total messaging contacts from engagement | ~17 |
-| Cost per messaging contact | ~529K |
+| Cost per messaging contact | ~618K |
 | Estimated Done from engagement | ~0-2 |
 
-> **🔍 Socratic #18:** Nếu 9M VND engagement spend tạo ra gần 0 Done, thì objective là gì?
+> **🔍 Socratic #18:** Nếu 10.5M VND engagement spend tạo ra gần 0 Done, thì objective là gì?
 > - Brand awareness? **Cho một gym local? Ai cần biết thương hiệu gym ngoài người ở gần?**
 > - Warm audience? **Có retarget engagers bằng lead gen campaign không?**
 > - Social proof? **500K likes có đổi được 1 khách không?**
@@ -293,7 +295,7 @@ Các câu hỏi dưới đây **phải** được trả lời trước khi optim
 | 2 | **Retention rate sau 3/6/12 tháng?** | Nếu 70% khách churn sau 3 tháng, thì LTV thấp và current CPD có thể lỗ |
 | 3 | **Lead "Đang chăm sóc" convert thành Done rate bao nhiêu?** | Nếu < 5%, thì 35% pipeline là ảo, actual close rate thấp hơn reported |
 | 4 | **Geo radius targeting đang set bao nhiêu?** | 15% lead nhà xa → tiền lãng phí |
-| 5 | **Có retarget engagement audience không?** | Nếu không → 9M engagement spend = dead money |
+| 5 | **Có retarget engagement audience không?** | Nếu không → 10.5M engagement spend = dead money |
 | 6 | **Kill criteria cho campaign test?** | Không có → budget leak vào campaigns kém hiệu quả |
 | 7 | **Lead allocation formula cho sale team?** | Random allocation waste leads, performance-based tăng output |
 | 8 | **Speed-to-lead trung bình bao nhiêu phút?** | Sau 5 phút, lead quality giảm 80%. CRM notes cho thấy nhiều "gọi không nghe" — gọi sau bao lâu? |
@@ -332,7 +334,7 @@ Các câu hỏi dưới đây **phải** được trả lời trước khi optim
 1. **AOV và gói bán chạy nhất là gì?** Thiếu data doanh thu → không tính được ROAS chính xác
 2. **Lead Ultra T3/2026 ở đâu?** T3 là tháng spend cao nhất mà không có conversion data
 3. **Campaign "hocboivid" (CPL 58K) — creative/angle gì?** Hiệu quả gấp 2-3x cần được nhân rộng
-4. **Engagement audience có được retarget không?** Quyết định 9M VND spend có hợp lý hay không
+4. **Engagement audience có được retarget không?** Quyết định 10.5M VND spend có hợp lý hay không
 5. **"Đang chăm sóc" conversion rate?** Thật sự convert bao nhiêu % sau 30/60/90 ngày?
 6. **Geo targeting radius hiện tại?** Cần xác nhận để fix
 7. **Ad creative đang chạy bao nhiêu variants?** Ảnh hưởng lớn đến CPL mà data export không cho biết
