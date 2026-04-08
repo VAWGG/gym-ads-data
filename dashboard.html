@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym Ads Performance Report — T11/2025 → T3/2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+  /* ============ BASE ============ */
+  :root {
+    --primary: #1a1a2e;
+    --accent: #e94560;
+    --accent2: #0f3460;
+    --accent3: #16213e;
+    --green: #2ecc71;
+    --yellow: #f39c12;
+    --red: #e74c3c;
+    --gray: #95a5a6;
+    --light: #f8f9fa;
+    --card-bg: #ffffff;
+    --text: #2c3e50;
+    --text-light: #7f8c8d;
+    --border: #e8ecf1;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--light);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ============ LAYOUT ============ */
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+  .header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent3) 50%, var(--accent2) 100%);
+    color: white;
+    padding: 40px 32px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: rgba(233, 69, 96, 0.15);
+    border-radius: 50%;
+  }
+  .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; position: relative; z-index: 1; }
+  .header .subtitle { font-size: 14px; opacity: 0.8; position: relative; z-index: 1; }
+  .header .date-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-top: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============ KPI CARDS ============ */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 4px solid var(--accent2);
+    transition: transform 0.2s;
+  }
+  .kpi-card:hover { transform: translateY(-2px); }
+  .kpi-card.red { border-left-color: var(--red); }
+  .kpi-card.green { border-left-color: var(--green); }
+  .kpi-card.yellow { border-left-color: var(--yellow); }
+  .kpi-card .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); margin-bottom: 4px; }
+  .kpi-card .kpi-value { font-size: 28px; font-weight: 700; color: var(--primary); }
+  .kpi-card .kpi-sub { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+  .kpi-card .kpi-trend { font-size: 12px; margin-top: 4px; font-weight: 600; }
+  .kpi-card .kpi-trend.up { color: var(--red); }
+  .kpi-card .kpi-trend.down { color: var(--green); }
+  .kpi-card .kpi-trend.neutral { color: var(--yellow); }
+
+  /* ============ SECTIONS ============ */
+  .section {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .icon { font-size: 20px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+  /* ============ TABLES ============ */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--light); color: var(--text-light); font-weight: 600; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; padding: 10px 12px; text-align: left; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(15, 52, 96, 0.03); }
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+  .mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; }
+
+  /* ============ BADGES ============ */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-red { background: #fde8e8; color: var(--red); }
+  .badge-green { background: #d4efdf; color: #1e8449; }
+  .badge-yellow { background: #fef9e7; color: #b7950b; }
+  .badge-gray { background: #ebedef; color: #5d6d7e; }
+  .badge-blue { background: #d6eaf8; color: #2471a3; }
+
+  /* ============ PROGRESS BAR ============ */
+  .progress-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .progress-bar .fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+
+  /* ============ INSIGHT BOX ============ */
+  .insight-box {
+    background: linear-gradient(135deg, #fff5f5, #fef2f2);
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+    font-size: 13px;
+  }
+  .insight-box.warning {
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border-color: #fde68a;
+  }
+  .insight-box.info {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-color: #93c5fd;
+  }
+  .insight-box .insight-title { font-weight: 700; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* ============ CHART CONTAINER ============ */
+  .chart-container { position: relative; height: 280px; }
+  .chart-container.small { height: 220px; }
+
+  /* ============ FUNNEL ============ */
+  .funnel { display: flex; flex-direction: column; gap: 4px; padding: 8px 0; }
+  .funnel-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .funnel-bar {
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    min-width: 60px;
+    transition: width 0.5s;
+  }
+  .funnel-label { font-size: 12px; color: var(--text-light); min-width: 120px; text-align: right; }
+  .funnel-value { font-size: 12px; color: var(--text); font-weight: 600; min-width: 80px; }
+
+  /* ============ SOCRATIC QUESTIONS ============ */
+  .socratic {
+    background: var(--primary);
+    color: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .socratic h3 { font-size: 16px; margin-bottom: 16px; color: var(--accent); }
+  .socratic .q-item {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .socratic .q-item:last-child { border-bottom: none; }
+  .socratic .q-num { color: var(--accent); font-weight: 700; margin-right: 8px; }
+
+  /* ============ FOOTER ============ */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-light);
+    font-size: 11px;
+  }
+
+  /* ============ PRINT / PDF ============ */
+  @media print {
+    body { background: white; font-size: 11px; }
+    .container { padding: 0; max-width: 100%; }
+    .section, .kpi-card, .header, .socratic { box-shadow: none; break-inside: avoid; }
+    .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .header { padding: 24px; margin-bottom: 16px; }
+    .section { padding: 16px; margin-bottom: 12px; }
+    .kpi-card .kpi-value { font-size: 22px; }
+    .chart-container { height: 220px; }
+    .chart-container.small { height: 180px; }
+    canvas { max-height: 100% !important; }
+    .no-print { display: none; }
+    .page-break { page-break-before: always; }
+  }
+
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>GYM ADS PERFORMANCE REPORT</h1>
+    <div class="subtitle">Phân tích chi tiết hiệu quả quảng cáo & chuyển đổi khách hàng</div>
+    <div class="date-badge">T11/2025 → T3/2026 &nbsp;|&nbsp; Data Analysis Report</div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi-card red">
+      <div class="kpi-label">Total Ads Spend (T1-T3)</div>
+      <div class="kpi-value">83.8M</div>
+      <div class="kpi-sub">VND across 3 months</div>
+      <div class="kpi-trend up">T3 scale +164% vs T2</div>
+    </div>
+    <div class="kpi-card yellow">
+      <div class="kpi-label">Avg Close Rate</div>
+      <div class="kpi-value">10.7%</div>
+      <div class="kpi-sub">75 Done / 686 leads</div>
+      <div class="kpi-trend neutral">Benchmark: 15-20%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Avg CPL (Meta)</div>
+      <div class="kpi-value">195K</div>
+      <div class="kpi-sub">VND per lead form</div>
+      <div class="kpi-trend down">T2 best: 161K</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Cost per Done</div>
+      <div class="kpi-value">~970K</div>
+      <div class="kpi-sub">VND per actual customer</div>
+      <div class="kpi-trend up">T1 peak: 1.02M</div>
+    </div>
+  </div>
+
+  <!-- ROW 1: Monthly Spend + Leads chart + CPL trend -->
+  <div class="grid-2">
+    <div class="section">
+      <div class="section-title"><span class="icon">📊</span> Monthly Ads Spend & Leads</div>
+      <div class="chart-container">
+        <canvas id="chartSpendLeads"></canvas>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title"><span class="icon">📉</span> CPL & Cost per Done Trend</div>
+      <div class="chart-container">
+        <canvas id="chartCPL"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- FUNNEL -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🔻</span> Lead Funnel (T11/2025 → T2/2026 Combined)</div>
+    <div class="grid-2">
+      <div>
+        <div class="funnel">
+          <div class="funnel-step">
+            <div class="funnel-label">Impressions</div>
+            <div class="funnel-bar" style="width:100%;background:var(--accent2);">1.7M+</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Clicks</div>
+            <div class="funnel-bar" style="width:55%;background:#2980b9;">42.2K</div>
+            <div class="funnel-value">CTR ~2.6%</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Meta Leads</div>
+            <div class="funnel-bar" style="width:18%;background:var(--yellow);">429</div>
+            <div class="funnel-value">Lead Rate ~1.0%</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">CRM Leads</div>
+            <div class="funnel-bar" style="width:15%;background:#e67e22;">686</div>
+            <div class="funnel-value">Incl. GG, Hotline</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Done (Khách)</div>
+            <div class="funnel-bar" style="width:5%;background:var(--accent);">75</div>
+            <div class="funnel-value">Close 10.7%</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="insight-box warning">
+          <div class="insight-title">Leak lớn nhất ở đâu?</div>
+          <strong>60% leads rớt ở bước Sale → Done.</strong> Trong đó 50-73% bị đánh dấu "Không phù hợp" ngay từ cuộc gọi đầu — nghĩa là vấn đề nằm ở <strong>chất lượng lead từ ads</strong>, không phải kỹ năng sale.
+        </div>
+        <div class="insight-box info" style="margin-top:12px;">
+          <div class="insight-title">So sánh CRM Leads vs Meta Leads</div>
+          CRM có 686 leads (4 tháng) nhưng Meta chỉ report 185 leads (T1+T2). Gap do: (1) GG/Hotline/TikTok sources, (2) Meta report khác period, (3) possible tracking discrepancy.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEAD STATUS BREAKDOWN -->
+  <div class="grid-2">
+    <div class="section">
+      <div class="section-title"><span class="icon">🎯</span> Lead Status Distribution</div>
+      <div class="chart-container">
+        <canvas id="chartStatus"></canvas>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title"><span class="icon">📡</span> Lead Source Performance</div>
+      <div class="chart-container">
+        <canvas id="chartSource"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE BREAK FOR PDF -->
+  <div class="page-break"></div>
+
+  <!-- CAMPAIGN TABLE -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🏷️</span> Campaign Performance — T3/2026 (Highest Spend Month)</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Campaign</th>
+          <th class="text-right">Spend (VND)</th>
+          <th class="text-right">Leads</th>
+          <th class="text-right">CPL</th>
+          <th class="text-right">Impressions</th>
+          <th class="text-right">Clicks</th>
+          <th class="text-right">CTR</th>
+          <th>Type</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>aaaaamaaanhhh</strong></td>
+          <td class="text-right mono">8,946,436</td>
+          <td class="text-right">68</td>
+          <td class="text-right mono">131,565</td>
+          <td class="text-right mono">118,918</td>
+          <td class="text-right">2,573</td>
+          <td class="text-right">2.16%</td>
+          <td><span class="badge badge-blue">Lead</span></td>
+          <td><span class="badge badge-yellow">Monitor CPL</span></td>
+        </tr>
+        <tr>
+          <td><strong>llinhhai</strong></td>
+          <td class="text-right mono">7,134,956</td>
+          <td class="text-right">54</td>
+          <td class="text-right mono">132,129</td>
+          <td class="text-right mono">81,138</td>
+          <td class="text-right">2,762</td>
+          <td class="text-right">3.40%</td>
+          <td><span class="badge badge-blue">Lead</span></td>
+          <td><span class="badge badge-green">Good CTR</span></td>
+        </tr>
+        <tr>
+          <td><strong>linh3</strong></td>
+          <td class="text-right mono">7,105,961</td>
+          <td class="text-right">65</td>
+          <td class="text-right mono">109,322</td>
+          <td class="text-right mono">86,599</td>
+          <td class="text-right">2,722</td>
+          <td class="text-right">3.14%</td>
+          <td><span class="badge badge-blue">Lead</span></td>
+          <td><span class="badge badge-green">Best CPL</span></td>
+        </tr>
+        <tr>
+          <td><strong>linh</strong></td>
+          <td class="text-right mono">5,810,728</td>
+          <td class="text-right">42</td>
+          <td class="text-right mono">138,351</td>
+          <td class="text-right mono">63,063</td>
+          <td class="text-right">1,457</td>
+          <td class="text-right">2.31%</td>
+          <td><span class="badge badge-blue">Lead</span></td>
+          <td><span class="badge badge-yellow">Avg</span></td>
+        </tr>
+        <tr style="background:#f0fdf4;">
+          <td><strong>hocboivid</strong></td>
+          <td class="text-right mono">5,654,936</td>
+          <td class="text-right"><strong>97</strong></td>
+          <td class="text-right mono"><strong>58,298</strong></td>
+          <td class="text-right mono">50,383</td>
+          <td class="text-right">1,928</td>
+          <td class="text-right">3.83%</td>
+          <td><span class="badge badge-blue">Lead</span></td>
+          <td><span class="badge badge-green">STAR ★</span></td>
+        </tr>
+        <tr>
+          <td>amank2</td>
+          <td class="text-right mono">2,691,401</td>
+          <td class="text-right">15</td>
+          <td class="text-right mono">179,427</td>
+          <td class="text-right mono">37,105</td>
+          <td class="text-right">623</td>
+          <td class="text-right">1.68%</td>
+          <td><span class="badge badge-blue">Lead</span></td>
+          <td><span class="badge badge-red">High CPL</span></td>
+        </tr>
+        <tr>
+          <td>ttlinh</td>
+          <td class="text-right mono">1,606,251</td>
+          <td class="text-right">115,923</td>
+          <td class="text-right mono">14</td>
+          <td class="text-right mono">181,807</td>
+          <td class="text-right">3,841</td>
+          <td class="text-right">2.11%</td>
+          <td><span class="badge badge-gray">Engage</span></td>
+          <td><span class="badge badge-red">No leads</span></td>
+        </tr>
+        <tr>
+          <td>ttmanh</td>
+          <td class="text-right mono">1,637,533</td>
+          <td class="text-right">73,955</td>
+          <td class="text-right mono">22</td>
+          <td class="text-right mono">135,610</td>
+          <td class="text-right">903</td>
+          <td class="text-right">0.67%</td>
+          <td><span class="badge badge-gray">Engage</span></td>
+          <td><span class="badge badge-red">No leads</span></td>
+        </tr>
+        <tr>
+          <td>ttanhboi</td>
+          <td class="text-right mono">1,499,095</td>
+          <td class="text-right">67,043</td>
+          <td class="text-right mono">22</td>
+          <td class="text-right mono">117,772</td>
+          <td class="text-right">1,314</td>
+          <td class="text-right">1.12%</td>
+          <td><span class="badge badge-gray">Engage</span></td>
+          <td><span class="badge badge-red">No leads</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="insight-box" style="margin-top:16px;">
+      <div class="insight-title">Key Finding</div>
+      <strong>"hocboivid"</strong> (video bơi?) có CPL 58K — rẻ gấp 2-3x mọi campaign khác. CTR cũng cao nhất (3.83%). Cần nhân rộng approach này. Ngược lại, 3 engagement campaigns chiếm 4.7M spend nhưng tạo ~0 leads.
+    </div>
+  </div>
+
+  <!-- AGE & GENDER -->
+  <div class="grid-2">
+    <div class="section">
+      <div class="section-title"><span class="icon">👤</span> CPL by Age Group (Lead Campaigns)</div>
+      <div class="chart-container small">
+        <canvas id="chartAge"></canvas>
+      </div>
+      <div class="insight-box info" style="margin-top:12px;">
+        <div class="insight-title">Age Paradox</div>
+        18-24 chiếm 54% budget nhưng CPL 143K. Nhóm 35-44 CPL chỉ 105K, 45-54 chỉ 64K. <strong>Nhóm ít spend nhất lại hiệu quả nhất.</strong> Đã bao giờ thử scale budget cho 35+?
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title"><span class="icon">⚥</span> Gender Split (Lead Campaigns)</div>
+      <div class="chart-container small">
+        <canvas id="chartGender"></canvas>
+      </div>
+      <div class="insight-box info" style="margin-top:12px;">
+        <div class="insight-title">Gender Gap</div>
+        Female CPL 126K vs Male 149K — female rẻ hơn <strong>15%</strong>. Nhưng male nhận 58% budget. Cân nhắc rebalance hoặc separate campaigns by gender.
+      </div>
+    </div>
+  </div>
+
+  <!-- SALE PERFORMANCE -->
+  <div class="section">
+    <div class="section-title"><span class="icon">💼</span> Sales Team Performance (T11/2025 → T2/2026)</div>
+    <div class="grid-2">
+      <div>
+        <table>
+          <thead>
+            <tr><th>Sale</th><th class="text-right">Leads</th><th class="text-right">Done</th><th class="text-right">Close Rate</th><th>Trend</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Phát</strong></td>
+              <td class="text-right">181</td>
+              <td class="text-right">24</td>
+              <td class="text-right"><strong>13.3%</strong></td>
+              <td><span class="badge badge-green">Top Closer</span></td>
+            </tr>
+            <tr>
+              <td><strong>Huy</strong></td>
+              <td class="text-right">219</td>
+              <td class="text-right">28</td>
+              <td class="text-right"><strong>12.8%</strong></td>
+              <td><span class="badge badge-green">High Volume</span></td>
+            </tr>
+            <tr>
+              <td><strong>Linh</strong></td>
+              <td class="text-right">135</td>
+              <td class="text-right">12</td>
+              <td class="text-right">8.9%</td>
+              <td><span class="badge badge-yellow">Below Avg</span></td>
+            </tr>
+            <tr>
+              <td><strong>Đạt</strong></td>
+              <td class="text-right">150</td>
+              <td class="text-right">11</td>
+              <td class="text-right">7.3%</td>
+              <td><span class="badge badge-red">Needs Review</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="chart-container small">
+          <canvas id="chartSale"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="insight-box warning" style="margin-top:16px;">
+      <div class="insight-title">Sales Optimization Opportunity</div>
+      Nếu redistribute leads: Phát 30%, Huy 30%, Linh 25%, Đạt 15% (kèm coaching) → estimated +2-3 Done/tháng = <strong>+15% revenue uplift</strong> mà không tăng chi ads.
+      <br><br>Đạt close 0% trong T12/2025 và T2/2026 (2 tháng trắng). Pattern: passive approach "addzalo tư vấn" — cần intervention.
+    </div>
+  </div>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- SOURCE DEEP DIVE -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📱</span> Lead Source Deep Dive</div>
+    <table>
+      <thead>
+        <tr><th>Source</th><th class="text-right">Total Leads</th><th class="text-right">Done</th><th class="text-right">Close Rate</th><th class="text-right">Không phù hợp</th><th>Assessment</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>MKT (Meta)</strong></td>
+          <td class="text-right">539</td>
+          <td class="text-right">59</td>
+          <td class="text-right">10.9%</td>
+          <td class="text-right">316 (59%)</td>
+          <td><span class="badge badge-yellow">Core channel, quality issue</span></td>
+        </tr>
+        <tr>
+          <td><strong>GG (Google)</strong></td>
+          <td class="text-right">96</td>
+          <td class="text-right">8</td>
+          <td class="text-right">8.3%</td>
+          <td class="text-right">55 (57%)</td>
+          <td><span class="badge badge-red">Underperforming</span></td>
+        </tr>
+        <tr style="background:#f0fdf4;">
+          <td><strong>HOTLINE</strong></td>
+          <td class="text-right">34</td>
+          <td class="text-right">8</td>
+          <td class="text-right"><strong>23.5%</strong></td>
+          <td class="text-right">19 (56%)</td>
+          <td><span class="badge badge-green">Highest intent</span></td>
+        </tr>
+        <tr>
+          <td><strong>TIKTOK</strong></td>
+          <td class="text-right">14</td>
+          <td class="text-right">0</td>
+          <td class="text-right">0%</td>
+          <td class="text-right">8 (57%)</td>
+          <td><span class="badge badge-red">Zero conversion</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="insight-box" style="margin-top:16px;">
+      <div class="insight-title">HOTLINE = Highest Intent Channel</div>
+      Close rate 23.5% — gấp đôi MKT. Đây là khách chủ động gọi đến = intent thật. <strong>Tại sao không invest vào inbound marketing (SEO, GMB, referral) để tăng HOTLINE volume?</strong>
+    </div>
+  </div>
+
+  <!-- SPEND ALLOCATION -->
+  <div class="section">
+    <div class="section-title"><span class="icon">💰</span> Budget Allocation — Vấn đề cốt lõi</div>
+    <div class="grid-2">
+      <div>
+        <div class="chart-container small">
+          <canvas id="chartAllocation"></canvas>
+        </div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:12px;font-size:14px;">3 tháng tổng: 83.8M VND</h4>
+        <table>
+          <thead><tr><th>Category</th><th class="text-right">Spend</th><th class="text-right">%</th><th class="text-right">Leads</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Lead Gen Campaigns</td>
+              <td class="text-right mono">~69.5M</td>
+              <td class="text-right">83%</td>
+              <td class="text-right">429</td>
+            </tr>
+            <tr>
+              <td>Engagement Campaigns</td>
+              <td class="text-right mono">~12.8M</td>
+              <td class="text-right">15%</td>
+              <td class="text-right">~0</td>
+            </tr>
+            <tr>
+              <td>Messaging/Other</td>
+              <td class="text-right mono">~1.5M</td>
+              <td class="text-right">2%</td>
+              <td class="text-right">~7</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="insight-box warning" style="margin-top:12px;">
+          <div class="insight-title">12.8M VND Engagement = ?</div>
+          Nếu không retarget engagers → dead money. 12.8M ÷ CPL 160K = <strong>80 leads bị bỏ lỡ.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOCRATIC QUESTIONS -->
+  <div class="socratic">
+    <h3>10 CÂU HỎI CẦN TRẢ LỜI TRƯỚC KHI OPTIMIZE</h3>
+    <div class="q-item"><span class="q-num">01</span> <strong>Average Order Value?</strong> — Gói trung bình khách mua bao nhiêu? Không có → không tính được ROI.</div>
+    <div class="q-item"><span class="q-num">02</span> <strong>Retention rate?</strong> — Bao nhiêu % khách gia hạn sau 3/6/12 tháng?</div>
+    <div class="q-item"><span class="q-num">03</span> <strong>"Đang chăm sóc" convert rate?</strong> — 35% pipeline là thật hay ảo?</div>
+    <div class="q-item"><span class="q-num">04</span> <strong>Geo radius targeting?</strong> — Đang set bao nhiêu km? 15% lead nhà xa = tiền lãng phí.</div>
+    <div class="q-item"><span class="q-num">05</span> <strong>Retarget engagers?</strong> — 12.8M engagement spend có tạo custom audience không?</div>
+    <div class="q-item"><span class="q-num">06</span> <strong>Kill criteria?</strong> — Tắt campaign kém sau bao lâu / bao nhiêu spend?</div>
+    <div class="q-item"><span class="q-num">07</span> <strong>Speed-to-lead?</strong> — Sale gọi sau bao lâu khi lead vào? >5 phút = mất 80% quality.</div>
+    <div class="q-item"><span class="q-num">08</span> <strong>Lead Ultra T3?</strong> — Tháng spend cao nhất mà không có conversion data = bay mù.</div>
+    <div class="q-item"><span class="q-num">09</span> <strong>Competitive pricing?</strong> — "Chi phí cao" là perception hay thật sự đắt hơn thị trường?</div>
+    <div class="q-item"><span class="q-num">10</span> <strong>Campaign "hocboivid" creative?</strong> — CPL 58K, rẻ gấp 3x. Creative/angle gì cần nhân rộng?</div>
+  </div>
+
+  <!-- ACTION ITEMS -->
+  <div class="section">
+    <div class="section-title"><span class="icon">✅</span> Action Items — Ưu tiên theo Impact</div>
+    <table>
+      <thead>
+        <tr><th>Priority</th><th>Action</th><th>Expected Impact</th><th>Effort</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-red">P0</span></td>
+          <td>Thu thập Lead Ultra T3/2026</td>
+          <td>Validate T3 scaling ROI</td>
+          <td>1 ngày</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-red">P0</span></td>
+          <td>Thêm khoảng giá vào ad copy ("từ 500K/tháng")</td>
+          <td>Giảm 20-30% lead rác</td>
+          <td>1 ngày</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-red">P1</span></td>
+          <td>Thu hẹp geo targeting (max 3km)</td>
+          <td>Giảm 15% "nhà xa" leads</td>
+          <td>30 phút</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-red">P1</span></td>
+          <td>Scale "hocboivid" approach (CPL 58K)</td>
+          <td>Giảm CPL tổng 30-40%</td>
+          <td>1 tuần</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-yellow">P2</span></td>
+          <td>Gộp campaigns (max 3 lead campaigns)</td>
+          <td>Exit learning phase, better optimization</td>
+          <td>1 tuần</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-yellow">P2</span></td>
+          <td>Tắt/justify engagement campaigns</td>
+          <td>Free up 4-5M/tháng</td>
+          <td>1 ngày</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-yellow">P2</span></td>
+          <td>Redistribute leads (Phát 30%, coaching Đạt)</td>
+          <td>+2-3 Done/tháng (+15%)</td>
+          <td>Ongoing</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-blue">P3</span></td>
+          <td>Test campaign target 35-54 tuổi</td>
+          <td>Tap vào CPL thấp hơn 30%</td>
+          <td>2 tuần</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-blue">P3</span></td>
+          <td>Build AOV & LTV tracking</td>
+          <td>Enable real ROI measurement</td>
+          <td>1 tuần</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>Generated from raw data analysis — T11/2025 → T3/2026 &nbsp;|&nbsp; All metrics from Meta Ads Export & Lead Ultra CRM</p>
+    <p style="margin-top:4px;">Confidential — For internal use only</p>
+  </div>
+
+</div>
+
+<!-- ============ CHARTS ============ -->
+<script>
+Chart.defaults.font.family = "'Segoe UI', -apple-system, sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#7f8c8d';
+
+// --- Monthly Spend & Leads ---
+new Chart(document.getElementById('chartSpendLeads'), {
+  type: 'bar',
+  data: {
+    labels: ['T11/25*', 'T12/25*', 'T1/26', 'T2/26', 'T3/26'],
+    datasets: [
+      {
+        label: 'Ads Spend (M VND)',
+        data: [15, 15, 23.4, 16.6, 43.8],
+        backgroundColor: 'rgba(15, 52, 96, 0.7)',
+        borderRadius: 6,
+        yAxisID: 'y',
+        order: 2
+      },
+      {
+        label: 'CRM Leads',
+        data: [163, 166, 204, 153, null],
+        borderColor: '#e94560',
+        backgroundColor: '#e94560',
+        type: 'line',
+        tension: 0.3,
+        pointRadius: 5,
+        pointBackgroundColor: '#e94560',
+        yAxisID: 'y1',
+        order: 1
+      },
+      {
+        label: 'Done',
+        data: [16, 18, 23, 18, null],
+        borderColor: '#2ecc71',
+        backgroundColor: '#2ecc71',
+        type: 'line',
+        tension: 0.3,
+        pointRadius: 5,
+        pointBackgroundColor: '#2ecc71',
+        borderDash: [5, 5],
+        yAxisID: 'y1',
+        order: 0
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12 } } },
+    scales: {
+      y: { title: { display: true, text: 'Spend (M VND)' }, beginAtZero: true },
+      y1: { position: 'right', title: { display: true, text: 'Count' }, beginAtZero: true, grid: { display: false } }
+    }
+  }
+});
+
+// --- CPL & Cost per Done ---
+new Chart(document.getElementById('chartCPL'), {
+  type: 'line',
+  data: {
+    labels: ['T11/25', 'T12/25', 'T1/26', 'T2/26'],
+    datasets: [
+      {
+        label: 'Cost per Done (K VND)',
+        data: [938, 833, 1017, 922],
+        borderColor: '#e94560',
+        backgroundColor: 'rgba(233, 69, 96, 0.1)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 6,
+        pointBackgroundColor: '#e94560'
+      },
+      {
+        label: 'Meta CPL (K VND)',
+        data: [null, null, 286, 161],
+        borderColor: '#0f3460',
+        backgroundColor: 'rgba(15, 52, 96, 0.1)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 6,
+        pointBackgroundColor: '#0f3460'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12 } } },
+    scales: { y: { title: { display: true, text: 'K VND' }, beginAtZero: false } }
+  }
+});
+
+// --- Lead Status Stacked Bar ---
+new Chart(document.getElementById('chartStatus'), {
+  type: 'bar',
+  data: {
+    labels: ['T11/25', 'T12/25', 'T1/26', 'T2/26'],
+    datasets: [
+      { label: 'Done', data: [16, 18, 23, 18], backgroundColor: '#2ecc71', borderRadius: 2 },
+      { label: 'Đang chăm sóc', data: [27, 52, 72, 36], backgroundColor: '#f39c12', borderRadius: 2 },
+      { label: 'Chưa nghe máy', data: [1, 7, 7, 8], backgroundColor: '#95a5a6', borderRadius: 2 },
+      { label: 'Không phù hợp', data: [119, 89, 102, 91], backgroundColor: '#e74c3c', borderRadius: 2 }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 8, font: { size: 10 } } } },
+    scales: { x: { stacked: true }, y: { stacked: true, title: { display: true, text: 'Leads' } } }
+  }
+});
+
+// --- Source Performance ---
+new Chart(document.getElementById('chartSource'), {
+  type: 'bar',
+  data: {
+    labels: ['MKT (Meta)', 'GG (Google)', 'HOTLINE', 'TIKTOK'],
+    datasets: [
+      {
+        label: 'Close Rate %',
+        data: [10.9, 8.3, 23.5, 0],
+        backgroundColor: ['rgba(15,52,96,0.8)', 'rgba(15,52,96,0.5)', 'rgba(46,204,113,0.8)', 'rgba(231,76,60,0.5)'],
+        borderRadius: 6
+      }
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: (c) => c.raw + '% close rate' } }
+    },
+    scales: { x: { title: { display: true, text: 'Close Rate (%)' }, max: 30 } }
+  }
+});
+
+// --- Age CPL ---
+new Chart(document.getElementById('chartAge'), {
+  type: 'bar',
+  data: {
+    labels: ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'],
+    datasets: [
+      {
+        label: 'CPL (K VND)',
+        data: [143, 150, 105, 64, 18, 21],
+        backgroundColor: ['#e74c3c', '#e67e22', '#2ecc71', '#27ae60', '#16a085', '#1abc9c'],
+        borderRadius: 6
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: { y: { title: { display: true, text: 'CPL (K VND)' }, beginAtZero: true } }
+  }
+});
+
+// --- Gender ---
+new Chart(document.getElementById('chartGender'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Male (Spend 34.3M, CPL 149K)', 'Female (Spend 24.5M, CPL 126K)'],
+    datasets: [{
+      data: [34.3, 24.5],
+      backgroundColor: ['#0f3460', '#e94560'],
+      hoverOffset: 8,
+      borderWidth: 3,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12, font: { size: 10 } } } }
+  }
+});
+
+// --- Sale Performance ---
+new Chart(document.getElementById('chartSale'), {
+  type: 'bar',
+  data: {
+    labels: ['Phát', 'Huy', 'Linh', 'Đạt'],
+    datasets: [
+      { label: 'Leads', data: [181, 219, 135, 150], backgroundColor: 'rgba(15,52,96,0.3)', borderRadius: 4 },
+      { label: 'Done', data: [24, 28, 12, 11], backgroundColor: 'rgba(46,204,113,0.8)', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12 } } },
+    scales: { y: { beginAtZero: true } }
+  }
+});
+
+// --- Budget Allocation ---
+new Chart(document.getElementById('chartAllocation'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Lead Gen (69.5M)', 'Engagement (12.8M)', 'Messaging/Other (1.5M)'],
+    datasets: [{
+      data: [69.5, 12.8, 1.5],
+      backgroundColor: ['#0f3460', '#e74c3c', '#f39c12'],
+      hoverOffset: 8,
+      borderWidth: 3,
+      borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 12, font: { size: 10 } } } }
+  }
+});
+</script>
+
+</body>
+</html>
